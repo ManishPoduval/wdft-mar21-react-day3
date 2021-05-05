@@ -33,9 +33,20 @@ class App extends Component {
 
   handleAddBook = ( book ) => {
     // adds a single book to the books state
+
+    //---------***********----------------
+    //--------SUPER IMPORTANT-------------
+    //---------***********----------------
+
+    // update the filtered books as well when a new book is added
     this.setState({
-      books: [book, ...this.state.books]
+      books: [book, ...this.state.books],
+      filteredBooks:  [book, ...this.state.books]
     })
+
+    //---------***********----------------
+    //---------***********----------------
+    
   }
 
   handleAddTotal = (book, quantity) => {
