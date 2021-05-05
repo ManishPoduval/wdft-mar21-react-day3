@@ -1,69 +1,66 @@
-import React, { Component } from 'react'
-
+import React, { useState } from 'react'
 import {Paper, Grid} from '@material-ui/core'
 import Items from './components/Items'
 import Total from './components/Total'
 import data from './books.json'
 
-class App extends Component {
+function App() {
 
+  //create your state here
+  const [books, updateBooks] = useState(data)
+  const [filteredBooks, updateFilteredBooks] = useState(data)
+  const [totalBooks, updateTotalBooks] = useState([])
 
-  state = {
-    books: data,
-    filteredBooks: data, // a copy of the data to have the filter feature
-    totalBooks: []
-  }
-
-  handleSearch = (e) => {
+  const handleSearch = (e) => {
     // since our onChange event listener is on the input
     // e.target will give us  the input DOM
     let input  = e.target.value 
 
-    const {books} = this.state
     let filteredBooks = books.filter((singleBook) => {
       // converting to same case 
       // checking if the input includes in the books title
       return singleBook.title.toLowerCase().includes(input.toLowerCase())
     })
 
-    this.setState({
-      filteredBooks: filteredBooks
-    })
+    // update the state
+    updateFilteredBooks(filteredBooks)
   }
 
-  handleAddBook = ( book ) => {
+  const handleAddBook = ( book ) => {
     // adds a single book to the books state
-    this.setState({
-      books: [book, ...this.state.books]
-    })
+    updateBooks( [book, ...books] )
+
+    //---------***********----------------
+    //--------SUPER IMPORTANT-------------
+    //---------***********----------------
+
+    // update the filtered books as well when a new book is added
+    updateFilteredBooks( [book, ...books] )
+
+    //---------***********----------------
+    //---------***********----------------
+    
   }
 
-  handleAddTotal = (book, quantity) => {
+  const handleAddTotal = (book, quantity) => {
     // will update the totalBooks array 
     // we will pass this to the Total.js component
-    console.log('Total works', book, quantity)
+
     let myBook = { ...book, quantity}
 
     //We update the totalBooks state here which is used by Total.js 
-    this.setState({
-      totalBooks: [myBook, ...this.state.totalBooks]
-    })
+    updateTotalBooks([myBook, ...totalBooks])
+
   }
 
-
-  render() {
-    // Destructuring our state
-    // ALWAYS SHOW THE FILTERED BOOKS TO THE
-    const {filteredBooks, totalBooks} = this.state
-
-    return (
-       <Grid container spacing={3}>
-         <Grid item xs={6} sm={3}>
+  return (
+      <Grid container spacing={3}>
+        <Grid item xs={6} sm={3}>
           <Paper >
             <Items 
-              onAdd={this.handleAddBook}  
-              onSearch={this.handleSearch}
-              onTotal={this.handleAddTotal}
+              onAdd={handleAddBook}  
+              onSearch={handleSearch}
+              onTotal={handleAddTotal}
               books={filteredBooks} 
             />
           </Paper>
@@ -73,9 +70,8 @@ class App extends Component {
             <Total totalBooks={totalBooks}/>
           </Paper>
         </Grid>
-       </Grid>
-    )
-  }
+      </Grid>
+  )
 }
 
 export default App

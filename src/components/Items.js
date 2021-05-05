@@ -1,23 +1,14 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import ItemDetail from './ItemDetail'
 import AddForm from './AddForm'
 import { Button } from '@material-ui/core';
 import Search from './Search';
 
-class Items extends Component {
+function Items(props) {
 
-    /*
-    props will look like this
-    this.props = {
-        books: Array
-    }
-    */
+    const [showForm, updateForm] = useState(false)
 
-    state = {
-        showForm: false
-    }
-
-    handleSubmit = (e) => {
+    const handleSubmit = (e) => {
         // PREVENT THE DEFAULT BEHAVIOUR OF SUBMIT EVENTS
         // REMEBER THE ? IT PUTS IN THE URL
         // By default submit events make a GET request with queries
@@ -29,46 +20,37 @@ class Items extends Component {
             title: title.value,
             price: price.value
         }
-        console.log(newBook)
-        this.setState({ showForm: false }, () => {
-            //calling the onAdd prop from App.js
-            // to add a new book to the books state
-            this.props.onAdd( newBook )
-        })
 
+        updateForm(false)
+        props.onAdd( newBook )
     }
 
-    handleShowForm = () => {
-        this.setState({   showForm: true })
+    const handleShowForm = () => {
+         updateForm(true)
     }
 
-    render() {
-        //destructure the props
-        const {books, onTotal, onSearch} = this.props
-
-        const {showForm} = this.state
-
-        return (
-            <div>
-                <h2>List</h2>
-                <Search onSearch={onSearch}/>
-                {
-                    showForm ? 
-                    <AddForm taka={this.handleSubmit} /> : 
-                    <Button onClick={this.handleShowForm} variant="contained" color="primary">Show form</Button> 
-                }
-                {
-                    books.map((book, index) => {
-                        return <ItemDetail 
+    // Destructure all props here
+    const {onSearch, onTotal, books} = props
+    return (
+        <div>
+            <h2>List</h2>
+            <Search onSearch={onSearch}/>
+            {
+                showForm ? 
+                    <AddForm taka={handleSubmit} /> : 
+                    <Button onClick={handleShowForm} variant="contained" color="primary">Show form</Button> 
+            }
+            {
+                books.map((book, index) => {
+                    return <ItemDetail 
                         onTotal={onTotal}
                         book={book}
                         key={index} 
                         />
                     })
-                }
-            </div>
-        )
-    }
+            }
+        </div>
+    )
 }
 
 export default Items

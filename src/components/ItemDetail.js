@@ -1,36 +1,25 @@
-import React, { Component } from 'react'
+import React, {useState} from 'react'
 import {TextField, Button} from '@material-ui/core'
 
-class ItemDetail extends Component {
+function ItemDetail(props) {
+    
+    // Create the quantity state here
+    const [quantity, updateQuantity] = useState(0)
 
-    // props will look like this
-    /*
-    this.props = {
-        book: Object
+    // Update the state , quantity here
+    const handleChange = (e) => {
+        updateQuantity(e.target.value)
     }
-    */
-
-    state = {
-        quantity: 0
-    }
-
-    handleChange = (e) => {
-        this.setState({
-            quantity: e.target.value
-        })
-    }
-
-    render() {
-        const {book, onTotal} = this.props
-        return (
-            <div>
-                <h4>{book.title}</h4>
-                <p>{book.price}</p>
-                <TextField onChange={this.handleChange} label="Quantity"  />
-                <Button onClick={ () => { onTotal(book, this.state.quantity)  }   } variant="contained" color="secondary">Add</Button>
-            </div>
-        )
-    }
+    
+    const {book, onTotal} = props
+    return (
+        <div>
+            <h4>{book.title}</h4>
+            <p>{book.price}</p>
+            <TextField onChange={handleChange} label="Quantity"  />
+            <Button onClick={ () => { onTotal(book, quantity)  }   } variant="contained" color="secondary">Add</Button>
+        </div>
+    )
 }
 
 export default ItemDetail
